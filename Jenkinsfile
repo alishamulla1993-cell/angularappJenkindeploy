@@ -1,0 +1,41 @@
+pipeline {
+    agent any 
+    tools {
+        nodejs "NodeJs"
+    }
+    stages {
+        stage("checkout")
+        {
+            steps {
+                checkout scm
+
+            }
+        }
+        stage("installed package")
+        {
+            steps {
+            bat "npm ci"
+
+            }
+        }
+        stage("build") {
+            steps {
+                bat "npx ng build --configuration production"
+            }
+        }
+        stage("Deployment") {
+            steps {
+bat "del /q /s c:\\inetpub\\wwwroot\\angularnew\\*"
+bat "xcopy /E /Y /I dist\\AngularJenkin\\browser\\*  c:\\inetpub\\wwwroot\\angularnew\\"
+            }
+        }
+    }
+    post {
+        success {
+echo "success"
+        }
+        failure {
+echo "build"
+        }
+    }
+}
